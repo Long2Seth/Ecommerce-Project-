@@ -6,7 +6,8 @@ import { Providers } from "./providers";
 import clsx from "clsx";
 import { NavbarComponent } from "@/components/card/NavbarComponent";
 import FooterComponent from "@/components/card/FooterComponent";
-import  SessionWrapper  from "../SessionProvider";
+import SessionWrapper from "../SessionProvider";
+import StoreProvider from "../StoreProvider";
 
 export const metadata: Metadata = {
 	title: {
@@ -33,26 +34,28 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			
+
 			<SessionWrapper>
-			<body
-				className={clsx(
-					"min-h-screen bg-background font-sans antialiased",
-					fontSans.variable
-				)}
-			>
-				<Providers>
-					<div className="flex flex-col h-screen">
-						<NavbarComponent />
-						<main>
-							{children}
-						</main>
-						<footer>
-							<FooterComponent />
-						</footer>
-					</div>
-				</Providers>
-			</body>
+				<body
+					className={clsx(
+						"min-h-screen bg-background font-sans antialiased",
+						fontSans.variable
+					)}
+				>
+					<StoreProvider>
+						<Providers>
+							<div className="flex flex-col h-screen">
+								<NavbarComponent />
+								<main>
+									{children}
+								</main>
+								<footer>
+									<FooterComponent />
+								</footer>
+							</div>
+						</Providers>
+					</StoreProvider>
+				</body>
 			</SessionWrapper>
 
 		</html>

@@ -1,5 +1,6 @@
 'use client';
 import React from "react";
+import { useRouter } from "next/navigation";
 import { useSession, signIn, signOut } from "next-auth/react"
 import {
   Table,
@@ -21,12 +22,12 @@ import {
   ChipProps,
   SortDescriptor
 } from "@nextui-org/react";
-import {PlusIcon} from "./components/PlusIcon";
-import {VerticalDotsIcon} from "./components/VerticalDotsIcon";
-import {ChevronDownIcon} from "./components/ChevronDownIcon";
-import {SearchIcon} from "./components/SearchIcon";
-import {columns, users, statusOptions} from "./components/data";
-import {capitalize} from "./components/utils";
+import { PlusIcon } from "./components/PlusIcon";
+import { VerticalDotsIcon } from "./components/VerticalDotsIcon";
+import { ChevronDownIcon } from "./components/ChevronDownIcon";
+import { SearchIcon } from "./components/SearchIcon";
+import { columns, users, statusOptions } from "./components/data";
+import { capitalize } from "./components/utils";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   active: "success",
@@ -49,9 +50,9 @@ export default function MyShopPage() {
     column: "age",
     direction: "ascending",
   });
-
+  const router = useRouter();
   const [page, setPage] = React.useState(1);
-
+  const isLoggedIn = !!session;
   const hasSearchFilter = Boolean(filterValue);
 
   const headerColumns = React.useMemo(() => {
@@ -103,11 +104,11 @@ export default function MyShopPage() {
       case "name":
         return (
           <User
-            avatarProps={{radius: "lg", src: user.avatar}}
+            avatarProps={{ radius: "lg", src: user.avatar }}
             description={user.email}
             name={cellValue}
           >
-      
+
           </User>
         );
       case "role":
@@ -171,10 +172,10 @@ export default function MyShopPage() {
     }
   }, []);
 
-  const onClear = React.useCallback(()=>{
+  const onClear = React.useCallback(() => {
     setFilterValue("")
     setPage(1)
-  },[])
+  }, [])
 
   const topContent = React.useMemo(() => {
     return (
@@ -264,6 +265,12 @@ export default function MyShopPage() {
       </div>
     );
   }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+
+  if (!isLoggedIn) {
+    // Redirect to the local sign-in page when there's no session
+    router.push('/signIn');
+    return null; // Return null or a loading indicator while waiting for the redirect
+  }
 
   return (
     <Table

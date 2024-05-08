@@ -1,55 +1,63 @@
 import React from 'react';
+import { Button } from '@nextui-org/react';
+import { useAppDispatch } from '@/redux/hook';
+import { addToCart } from '@/redux/features/cart/cartSlice';
+import { useAppSelector } from '@/redux/hook';
+import { increment } from '@/redux/features/counter/counterSlice';
 
 type PropsType = {
+  id:number,
   name: string,
   desc: string,
   image: string,
   price: number
 }
 
-export default function ProductCardDetailComponent({ name, desc, image, price }: PropsType) {
+export default function ProductCardDetailComponent({ id , name, desc, image, price }: PropsType) {
+  const dispatch = useAppDispatch();
+  const count = useAppSelector((state) => state.counter.value)
 
   return (
-    <section style={{ width: '1100px', marginTop: '20px' }} className="mx-auto px-4 py-16 sm:px-6 ">
-      <p style={{ margin: '10px' }} className=' text-3xl font-bold'>Product Details</p>
+    <main className="mx-auto px-4 py-16 sm:px-6 w-[80%] ">
+
       <div className=" flex lg:flex-row sm:flex-col gap-5">
 
 
-        <section>
-          <img style={{ width: '900px', }} src={image} alt={name} />
+        <section data-aos="fade-right">
+          <img src={image} width={700} height={700} alt={name} />
         </section>
 
 
 
-        <section className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0 ">
+        <section className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0  ml-10" data-aos="fade-left">
           <h2 className="text-sm title-font text-gray-500 tracking-widest">BRAND NAME </h2>
           <h1 className="text-gray-900 text-3xl title-font font-medium mb-4">{name}</h1>
           <div className="flex mb-4">
             <div className="flex mb-4">
               <span className="flex items-center">
                 <svg fill="currentColor" stroke="currentColor" stroke-linecap="round"
-                  stroke-linejoin="round" stroke-width="2" className="w-4 h-4 text-yellow-500"
+                  stroke-linejoin="round" stroke-width="2" className="w-4 h-4 text-[#F07423]"
                   viewBox="0 0 24 24">
                   <path
                     d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
                   </path>
                 </svg>
                 <svg fill="currentColor" stroke="currentColor" stroke-linecap="round"
-                  stroke-linejoin="round" stroke-width="2" className="w-4 h-4 text-yellow-500"
+                  stroke-linejoin="round" stroke-width="2" className="w-4 h-4 text-[#F07423]"
                   viewBox="0 0 24 24">
                   <path
                     d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
                   </path>
                 </svg>
                 <svg fill="currentColor" stroke="currentColor" stroke-linecap="round"
-                  stroke-linejoin="round" stroke-width="2" className="w-4 h-4 text-yellow-500"
+                  stroke-linejoin="round" stroke-width="2" className="w-4 h-4 text-[#F07423]"
                   viewBox="0 0 24 24">
                   <path
                     d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
                   </path>
                 </svg>
                 <svg fill="currentColor" stroke="currentColor" stroke-linecap="round"
-                  stroke-linejoin="round" stroke-width="2" className="w-4 h-4 text-yellow-500"
+                  stroke-linejoin="round" stroke-width="2" className="w-4 h-4 text-[#F07423]"
                   viewBox="0 0 24 24">
                   <path
                     d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
@@ -94,14 +102,28 @@ export default function ProductCardDetailComponent({ name, desc, image, price }:
           <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-200  ">
 
           </div>
-          <div className="flex">
+          <div className="flex my-5">
             <span className="title-font font-medium text-2xl text-gray-900">${price}</span>
-            <button className="flex ml-auto text-white border-0 py-2 px-6 focus:outline-none bg-blue-700 hover:bg-blue-800 rounded-md">
+            <Button className="flex ml-auto text-white border-0 py-2 px-6 focus:outline-none bg-[#F07423]  rounded-md " onClick={() => {
+              // Assuming you have the missing properties available
+              const productToAdd = {
+                id,
+                name,
+                image,
+                price,
+                title: "Your Title Here",
+                description: "Your Description Here",
+                category: "Your Category Here",
+              };
+              dispatch(addToCart(productToAdd)
+                ,
+                dispatch(increment()));
+            }}>
               Add to Cart
-            </button>
+            </Button>
           </div>
         </section>
-      </div>
-    </section>
+      </div >
+    </main >
   );
 }

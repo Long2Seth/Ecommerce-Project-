@@ -3,13 +3,17 @@ import userProfileSlice from '@/redux/features/userProfile/userProfileSlice';
 import authSlice from '@/redux/features/auth/authSlice';
 import { ecommerceApi } from '@/redux/api';
 import passwordVisibilitySlice from '@/redux/features/password/passwordSlice';
+import cartSlice from './features/cart/cartSlice';
+import counterSlice from './features/counter/counterSlice';
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
+      auth:authSlice,
+      counter: counterSlice,
       userProfile: userProfileSlice,
+      cart:cartSlice,
       [ecommerceApi.reducerPath]: ecommerceApi.reducer,
-      auth: authSlice,
       passwordVisibility: passwordVisibilitySlice,
     },
     middleware: (getDefaultMiddleware) =>

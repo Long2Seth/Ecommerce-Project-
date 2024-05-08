@@ -8,13 +8,17 @@ import { link as linkStyles } from '@nextui-org/theme';
 import { siteConfig } from '@/config/site';
 import NextLink from 'next/link';
 import clsx from 'clsx';
+import { FaShoppingCart } from "react-icons/fa";
 import { ThemeSwitch } from '@/components/card/theme-switch';
 import { usePathname } from 'next/navigation';
+import { useAppSelector } from '@/redux/hook';
 
 export const NavbarComponent = () => {
   const { data: session } = useSession();
   const route = useRouter();
   const pathname = usePathname();
+  const count = useAppSelector((state) => state.counter.value)
+
 
   const isLoggedIn = !!session;
 
@@ -47,9 +51,13 @@ export const NavbarComponent = () => {
         ))}
       </NavbarContent>
 
-      <NavbarContent className="hidden basis-1/5 sm:flex sm:basis-full" justify="end">
-        <NavbarItem className="hidden gap-2 lg:flex">
+      <NavbarContent className="hidden basis-1/5 sm:flex sm:basis-full " justify="end">
+        <NavbarItem className="hidden gap-2 lg:flex relative">
           <ThemeSwitch />
+          <FaShoppingCart color='gray' size={45} onClick={() => {
+            route.push('/cart')
+          }}/>
+          <h1 className=' z-40 text-lg px-[6px]  text-white absolute top-[3px] right-[6px] '>{count}</h1>
         </NavbarItem>
         {!isLoggedIn && (
           <>

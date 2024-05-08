@@ -1,23 +1,19 @@
 'use client'
 import React, { useState, useEffect } from "react";
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signIn } from "next-auth/react"
 import { useAppDispatch, useAppSelector } from '@/redux/hook';
 import { selectToken, setAccessToken } from '@/redux/features/auth/authSlice';
 import { fetchUserProfile } from '@/redux/features/userProfile/userProfileSlice';
 import { useRouter } from "next/navigation";
-import { Button, useDisclosure } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { EyeSlashFilledIcon } from "@/components/icons/EyeSlashFilledIcon";
 import { EyeFilledIcon } from "@/components/icons/EyeFilledIcon";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
 import { FaGithub } from "react-icons/fa";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { values } from "lodash";
 import * as Yup from 'yup';
+import { initialValues } from "@/libs/constants";
 
-type initialValues = {
-  email: string;
-  password: string;
-}
 
 const initialValues: initialValues = {
   email: '',
@@ -34,18 +30,10 @@ export default function SignIn() {
 
 
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const handleConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
   const handleShowPassword = () => setShowPassword(!showPassword);
-  const [isVisible, setIsVisible] = useState(false);
-  const toggleVisibility = () => setIsVisible(!isVisible);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const router = useRouter();
-  const { data: session } = useSession();
-
   const dispatch = useAppDispatch();
-  const show = useAppSelector((state) => state.passwordVisibility);
   const token = useAppSelector(selectToken);
   console.log('Token from Redux store', token);
 
@@ -53,32 +41,28 @@ export default function SignIn() {
     dispatch(fetchUserProfile());
   }, []);
 
-  const BEST_URL = process.env.NEXT_PUBLIC_API_URL + '/singIn/'
-  console.log('Best URL: ', BEST_URL);
 
 
-  const handleSubmite = (values: initialValues) => {
-    console.log('Values: ', values);
+  const handleSubmit = (values: initialValues) => {
     setLoading(true);
-    fetch( BEST_URL, {
-      method: 'POST',
+    fetch(`http://localhost:3000/api/signIn`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(values)
+      body: JSON.stringify(values),
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log('Data in jwt test: ', data);
+        console.log(data);
+        router.push('/')
+        setLoading(false);
 
-        dispatch(setAccessToken(data.accessToken));
-        router.push('/');
-        setLoading(false);
       })
-      .catch((err) => {
-        console.log(err)
+      .catch((error) => {
+        console.log(error);
         setLoading(false);
-      })
+      });
   };
 
   if (loading) {
@@ -96,7 +80,9 @@ export default function SignIn() {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={handleSubmite}
+        onSubmit={(values, actions) => {
+          handleSubmit(values);
+        }}
       >
         <Form className=" bg-gray-100 p-4 rounded-lg w-[500px] ">
 
@@ -154,7 +140,7 @@ export default function SignIn() {
           </section>
 
 
-          <Button type="submit" className="my-5 text-xl p-6 text-white w-full bg-[#F07423] " onPress={onOpen} radius="sm" >
+          <Button type="submit" className="my-5 text-xl p-6 text-white w-full bg-[#F07423] " radius="sm" >
             Sigin Account
           </Button>
           <Button onClick={() => router.push('/signUp')} type="submit" className="mb-5 text-xl p-6 text-white w-full bg-[#0f766e] " radius="sm" >
